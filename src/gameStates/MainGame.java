@@ -36,6 +36,8 @@ public class MainGame implements State{
 	protected GameObject scoreManager;
 	
 	private Sound hitPaddle;
+	private Sound scorePlayer;
+	private Sound scoreEnemy;
 	
 	private Keyboard keyboard;
 	
@@ -62,16 +64,24 @@ public class MainGame implements State{
 		checkBallPlayerCollision();
 		verificaPontos();
 	}
-
+	
+	private void newGame(){
+		ball = new Ball();
+		player = new Player();
+		enemy = new Enemy();
+	}
+	
 	private void verificaPontos() {
 		switch(((Ball)ball).checkWallCollision()){
 		case 1:
 			((ScoreManager)scoreManager).addPointEnemy();
-			ball = new Ball();
+			scoreEnemy.playOnce();
+			newGame();
 			break;
 		case 2:
 			((ScoreManager)scoreManager).addPointPlayer();
-			ball = new Ball();
+			scorePlayer.playOnce();
+			newGame();
 			break;
 		default:
 			break;
@@ -136,6 +146,9 @@ public class MainGame implements State{
 		}
 		
 		hitPaddle = Sound.hitPaddle;
+		scorePlayer = Sound.scorePlayer;
+		scoreEnemy = Sound.scoreEnemy;
+		
 		midLine = new Rectangle(10, Pong.getGameHeight());
 		midLine.setLocation(Pong.getGameWidth()/2 - 5, 0);
 	}
@@ -150,13 +163,19 @@ public class MainGame implements State{
 		Rectangle ballBody = ball.getBody();
 		Rectangle playerBody = player.getBody();
 		Rectangle enemyBody = enemy.getBody();
-		
-		if(ballBody.getBounds().intersects(playerBody)){
+		if(	playerBody.getMinX() <= ballBody.getMinX()+ballBody.width &&
+			playerBody.getMinX() + playerBody.getWidth() >= ballBody.getMinX() &&
+			playerBody.getMinY() <= ballBody.getMinY() + ballBody.height &&
+			playerBody.getMinY() + playerBody.height >= ballBody.getMinY()){
 			((Ball) ball).checkPlayerCollision(playerBody.getCenterY(), ballBody.getCenterY());
 			hitPaddle.play();
 		}
 		
-		if(ballBody.getBounds().intersects(enemyBody)){
+		if(enemyBody.getMinX() <= ballBody.getMinX()+ballBody.width &&
+			enemyBody.getMinX() + enemyBody.getWidth() >= ballBody.getMinX() &&
+			enemyBody.getMinY() <= ballBody.getMinY() + ballBody.height &&
+			enemyBody.getMinY() + enemyBody.height >= ballBody.getMinY()){
+			
 			((Ball) ball).checkPlayerCollision(enemyBody.getCenterY(), ballBody.getCenterY());
 			hitPaddle.play();
 		}

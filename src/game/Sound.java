@@ -11,6 +11,8 @@ public class Sound {
 	private Clip clip;
 	
 	public static Sound hitPaddle = new Sound("resources/hit-paddle.m4a", -10.5f);
+	public static Sound scorePlayer = new Sound("resources/score-player.m4a", -10.5f);
+	public static Sound scoreEnemy = new Sound("resources/score-opponent.m4a", -10.5f);
 	
 	boolean played;
 	float volume;
