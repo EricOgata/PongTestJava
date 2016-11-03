@@ -1,5 +1,5 @@
 package components;
 
 public interface IWallCollision {
-	public void checkWallCollision();
+	public int checkWallCollision();
 }

@@ -9,8 +9,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import components.IMoveable;
 import components.IPlayerCollision;
+import components.IScorable;
 import components.IWallCollision;
 
 public class Ball extends GameObject implements IMoveable, IWallCollision, IPlayerCollision{
@@ -62,9 +65,11 @@ public class Ball extends GameObject implements IMoveable, IWallCollision, IPlay
 	}
 
 	@Override
-	public void update(double delta) {		
+	public void update(double delta) {
+		if(body.getMaxY() + 1 >= Pong.getGameHeight() || body.getMinY() - 1 <= 0){
+			speedY *= -1;
+		}
 		move(delta);
-		checkWallCollision();
 	}
 
 	@Override
@@ -75,14 +80,15 @@ public class Ball extends GameObject implements IMoveable, IWallCollision, IPlay
 	}
 
 	@Override
-	public void checkWallCollision() {
+	public int checkWallCollision() {
 		if(body.getMaxX() + 1 >= Pong.getGameWidth() || body.getMinX() - 1 <= 0){
-			invertSpeedX();
+			if(body.getMaxX() + 1 >= Pong.getGameWidth()){
+				return 1; // Inimigo pontua
+			}else{
+				return 2; // Jogador Pontua
+			}
 		}
-		
-		if(body.getMaxY() + 1 >= Pong.getGameHeight() || body.getMinY() - 1 <= 0){
-			speedY *= -1;
-		}		
+		return 0; // Nada Acontece				
 	}
 	
 	public void speedUpBall(){

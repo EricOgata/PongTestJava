@@ -8,10 +8,14 @@ import input.Keyboard;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import javax.swing.border.StrokeBorder;
@@ -21,12 +25,15 @@ import entities.Ball;
 import entities.Enemy;
 import entities.GameObject;
 import entities.Player;
+import entities.ScoreManager;
 
 public class MainGame implements State{
 	
+	// Game Objects
 	protected GameObject player;
 	private GameObject enemy;
 	private GameObject ball;
+	protected GameObject scoreManager;
 	
 	private Sound hitPaddle;
 	
@@ -40,6 +47,7 @@ public class MainGame implements State{
 		player.draw(g);
 		enemy.draw(g);
 		ball.draw(g);
+		scoreManager.draw(g);
 	}
 
 	@Override
@@ -52,6 +60,22 @@ public class MainGame implements State{
 		enemy.update(delta);
 		ball.update(delta);
 		checkBallPlayerCollision();
+		verificaPontos();
+	}
+
+	private void verificaPontos() {
+		switch(((Ball)ball).checkWallCollision()){
+		case 1:
+			((ScoreManager)scoreManager).addPointEnemy();
+			ball = new Ball();
+			break;
+		case 2:
+			((ScoreManager)scoreManager).addPointPlayer();
+			ball = new Ball();
+			break;
+		default:
+			break;
+		}
 		
 	}
 
@@ -95,6 +119,21 @@ public class MainGame implements State{
 		player = new Player();
 		enemy = new Enemy();
 		ball = new Ball();
+		scoreManager = new ScoreManager();
+		
+		try {
+			Font dynamicFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/arcade-normal.ttf"));
+			((ScoreManager)scoreManager).setFont(dynamicFont.deriveFont(20f));
+		} catch (FileNotFoundException e) {
+			((ScoreManager)scoreManager).setFont(new Font("arial", 1, 25));
+			e.printStackTrace();
+		} catch (FontFormatException e) {
+			((ScoreManager)scoreManager).setFont(new Font("arial", 1, 25));
+			e.printStackTrace();
+		} catch (IOException e) {
+			((ScoreManager)scoreManager).setFont(new Font("arial", 1, 25));
+			e.printStackTrace();
+		}
 		
 		hitPaddle = Sound.hitPaddle;
 		midLine = new Rectangle(10, Pong.getGameHeight());
