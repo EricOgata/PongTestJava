@@ -75,12 +75,12 @@ public class MainGame implements State{
 		switch(((Ball)ball).checkWallCollision()){
 		case 1:
 			((ScoreManager)scoreManager).addPointEnemy();
-			scoreEnemy.playOnce();
+			scoreEnemy.play();
 			newGame();
 			break;
 		case 2:
 			((ScoreManager)scoreManager).addPointPlayer();
-			scorePlayer.playOnce();
+			scorePlayer.play();
 			newGame();
 			break;
 		default:
